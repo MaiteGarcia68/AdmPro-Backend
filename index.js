@@ -11,20 +11,16 @@ const app = express();
 // Configurar CORS
 app.use( cors() );
 
+// Lectura y parseo del body
+app.use( express.json());
+
 // Conectar la BD
 dbConnection();
 
-console.log(process.env)
-
 // Rutas
-app.get( '/', ( req, rsp ) => {
+app.use( '/api/users', require('./routes/users'));
+app.use( '/api/login', require('./routes/auth'));
 
-    rsp.json({
-        ok: true,
-        msg: 'Hola Mundo'
-    })
-
-});
 
 // Levantar servidor
 app.listen(process.env.PORT, () => {
