@@ -5,13 +5,20 @@ const User = require('../models/user');
 const { generarJWT } = require('../helpers/jwt');
 
 const getUsers = async ( req, rsp = response ) => {
+    
+    const desde = Number(req.query.desde) || 0;
 
-    const users = await User.find({}, 'name email google role');
+    const [ users, total ] = await Promise.all([
+        User.find({}, 'name email google role img')
+            .skip( desde )
+            .limit(2),
+        User.countDocuments()
+    ])
 
     rsp.json({
         ok: true,
         users,
-        uid: req.uid,
+        total
     })
 }
 
