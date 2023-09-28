@@ -42,12 +42,28 @@ const createDoctor = async (req, rsp = response) => {
 
 const updateDoctor = async ( req, rsp = response ) => {
 
+    const id = req.params.id
+    console.log(id)
     
     try {
-        
+
+        const doctor = await Doctor.findById(id)
+
+        console.log('doctor', doctor)
+        if (!doctor) {
+            return rsp.status(500).json({
+                ok: false,
+                msg: 'id no existe',
+                id
+            });
+        }
+        doctor.name = req.body.name
+        doctor.hospital = req.body.hospital
+        await doctor.save()
+
         rsp.json({
             ok: true,
-            msg: 'actualizar doctor'
+            doctor
         })
         
     } catch (error) {
@@ -55,34 +71,42 @@ const updateDoctor = async ( req, rsp = response ) => {
         rsp.status(500).json({
             ok: false,
             msg: 'Error al actualizar doctor',
-            error: error.message
+            error: error.message,
+            id
         });
     }
 }
 
 const deleteDoctor = async ( req, rsp = response ) => {
 
+    const id = req.params.id
     
     try {
-        
+        const doctor = await Doctor.findById(id)
+
+        if (!doctor) {
+            return rsp.status(500).json({
+                ok: false,
+                msg: 'id no existe',
+                id
+            });
+        }
+        await Doctor.findByIdAndDelete(id)
 
         rsp.json({
             ok: true,
-            msg: 'doctor borrado correctamente'
+            msg: 'Registro eliminado'
         })
         
     } catch (error) {
         console.log(error);
         rsp.status(500).json({
             ok: false,
-            msg: 'Error al actualizar doctor',
+            msg: 'Error al eliminar doctor',
             error: error.message
         });
     }
 }
-
-
-
    
 module.exports = {
     getDoctors,

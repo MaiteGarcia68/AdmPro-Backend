@@ -103,7 +103,23 @@ const loginGoogle = async (req, rsp = response) => {
 
 };
 
+const renewToken = async (req, rsp = response) => {
+
+    console.log('llegue')
+    const uid = req.uid
+
+    // Generar el token
+    const token = await generarJWT(uid)
+
+    rsp.json({
+        ok: true,
+        token
+    });
+
+}
+
 module.exports = {
     login,
     loginGoogle,
+    renewToken,
 }

@@ -41,20 +41,31 @@ const createHospital = async (req, rsp = response) => {
 
 const updateHospital = async ( req, rsp = response ) => {
 
-    const uuid = req.params.id
+    const id = req.params.id
     
     try {
-        
+        const hospital = await Hospital.findById(id)
+
+        if (!hospital) {
+            return rsp.status(500).json({
+                ok: false,
+                msg: 'id no existe',
+                id
+            });
+        }
+        hospital.name = req.body.name
+        await hospital.save()
+
         rsp.json({
             ok: true,
-            msg: 'actualizar hospital'
+            hospital
         })
         
     } catch (error) {
         console.log(error);
         rsp.status(500).json({
             ok: false,
-            msg: 'Error al actualizar usuario',
+            msg: 'Error al actualizar hospital',
             error: error.message
         });
     }
@@ -63,19 +74,30 @@ const updateHospital = async ( req, rsp = response ) => {
 const deleteHospital = async ( req, rsp = response ) => {
 
     
+    const id = req.params.id
+    
     try {
-        
+        const hospital = await Hospital.findById(id)
+
+        if (!hospital) {
+            return rsp.status(500).json({
+                ok: false,
+                msg: 'id no existe',
+                id
+            });
+        }
+        await Hospital.findByIdAndDelete(id)
 
         rsp.json({
             ok: true,
-            msg: 'Usuario borrado correctamente'
+            msg: 'Registro eliminado'
         })
         
     } catch (error) {
         console.log(error);
         rsp.status(500).json({
             ok: false,
-            msg: 'Error al actualizar usuario',
+            msg: 'Error al actualizar hospital',
             error: error.message
         });
     }
