@@ -14,9 +14,6 @@ const router = Router();
 router.use(expressFileUpload());
 
 router.get( '/:tabla/:fileName', 
-            [
-                validarJWT
-            ],
             getImg );
             
 router.put( '/:tabla/:id', 

@@ -15,6 +15,28 @@ const getDoctors = async ( req, rsp = response ) => {
     })
 }
 
+const getDoctor = async ( req, rsp = response ) => {
+
+    const id = req.params.id
+    try {
+        const doctors = await Doctor.findById( id )
+                                    .populate('user','name email')
+                                    .populate('hospital','name')
+    
+        rsp.json({
+            ok: true,
+            doctors
+        })
+    } catch (error) {
+        rsp.status(500).json({
+            ok: false,
+            msg: 'Error al buscar doctor',
+            error: error.message
+        });
+    }
+
+}
+
 const createDoctor = async (req, rsp = response) => {
     
     const uid = req.uid
@@ -33,7 +55,7 @@ const createDoctor = async (req, rsp = response) => {
     } catch (error) {
         rsp.status(500).json({
             ok: false,
-            msg: 'Error al crear hospital',
+            msg: 'Error al crear doctor',
             error: error.message
         });
     }
@@ -110,6 +132,7 @@ const deleteDoctor = async ( req, rsp = response ) => {
    
 module.exports = {
     getDoctors,
+    getDoctor,
     createDoctor,
     updateDoctor,
     deleteDoctor,

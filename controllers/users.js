@@ -11,7 +11,7 @@ const getUsers = async ( req, rsp = response ) => {
     const [ users, total ] = await Promise.all([
         User.find({}, 'name email google role img')
             .skip( desde )
-            .limit(2),
+            .limit(5),
         User.countDocuments()
     ])
 
@@ -87,7 +87,8 @@ const updateUser = async ( req, rsp = response ) => {
                 });
             }
         }
-        campos.email = email;
+        // Solo actualiza email si no es usuario de google
+        if ( !usuarioExiste.google ) campos.email = email;
 
         // Actualizar compas
         const usuarioActualizado = await User.findByIdAndUpdate( uuid, campos, {new: true })
